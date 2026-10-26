@@ -40,6 +40,15 @@ def test_balance_of_valid_address():
     data = call("eth_getBalance", [zero, "latest"])
     assert data["result"].startswith("0x")
 
+@pytest.mark.parametrize("addr", [
+    "0x" + "0" * 39,   # 太短（39位）
+    "0x" + "0" * 41,   # 太长（41位）
+    "0x" + "g" * 40,   # 长度对，但含非法字符
+    "0" * 40,          # 缺少 0x 前缀
+])
+def test_bad_address_cases(addr):
+    data = call("eth_getBalance", [addr, "latest"])
+    assert "error" in data
 # import requests
 
 # URL = "https://ethereum-sepolia-rpc.publicnode.com"
