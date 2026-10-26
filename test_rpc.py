@@ -44,7 +44,11 @@ def test_balance_of_valid_address():
     "0x" + "0" * 39,   # 太短（39位）
     "0x" + "0" * 41,   # 太长（41位）
     "0x" + "g" * 40,   # 长度对，但含非法字符
-    "0" * 40,          # 缺少 0x 前缀
+        pytest.param(
+        "0" * 40,
+        marks=pytest.mark.xfail(
+            reason="公开节点对缺少0x前缀的地址处理不一致"),
+    ),  # 缺少 0x 前缀
 ])
 def test_bad_address_cases(addr):
     data = call("eth_getBalance", [addr, "latest"])
